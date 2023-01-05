@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import store from '@/store'
 Vue.use(Router)
 
 /* Layout */
@@ -177,5 +177,15 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
+router.beforeEach((to, from, next) => {
+  const token = store.state.user.token
+  if (to.path === '/login') {
+    next()
+  } else if (token) {
+    next()
+  } else {
+    next('/login')
+  }
+})
 
 export default router
