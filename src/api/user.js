@@ -5,8 +5,13 @@ export const login = ({ mobile, password }) => {
     password
   })
 }
-export function getInfo(token) {
-
+export function getInfo() {
+  return request.post('/sys/profile')
+}
+export function getUserDetailById(id) {
+  return request({
+    url: `/sys/user/${id}`
+  })
 }
 export function logout() {
 
