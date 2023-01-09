@@ -99,7 +99,8 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      timer: null
     }
   },
   watch: {
@@ -135,10 +136,16 @@ export default {
             console.log(error)
           } finally {
             this.loading = false
-            setTimeout(() => {
+            clearTimeout(this.timer)
+            this.timer = setTimeout(() => {
               this.loading = true
             }, 3000)
           }
+        } else {
+          clearTimeout(this.timer)
+          this.timer = setTimeout(() => {
+            this.loading = false
+          }, 1000)
         }
       })
     }

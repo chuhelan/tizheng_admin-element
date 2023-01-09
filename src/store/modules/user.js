@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken, getUserToken, setUserToken, removeUserToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserToken, setUserToken, removeUserToken, setTimeStamp } from '@/utils/auth'
 import { login, getInfo, getUserDetailById } from '@/api/user'
 // import store from '@/store'
 export default {
@@ -8,9 +8,11 @@ export default {
     userInfo: getUserToken()
   },
   mutations: {
+    // 设置token
     setTokenEl(state, token) {
       setToken(token)
       state.token = token
+      setTimeStamp()
     },
     removeToken(state) {
       state.token = ''
@@ -37,6 +39,7 @@ export default {
       const res = await getUserDetailById(data.userId)
       const user = { ...data, ...res.data }
       ctx.commit('setUserInfo', user)
+      return user
     },
     logout(ctx) {
       ctx.commit('removeToken')
