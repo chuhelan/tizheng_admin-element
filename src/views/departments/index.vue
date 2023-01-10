@@ -6,85 +6,74 @@
       class="tree-card"
     >
       <div slot="header">
-        <el-row type="flex" justify="space-between">
-          <el-col><div class="grid-content bg-purple" />
-            <span>江苏传智播客教育科技股份有限公司</span></el-col>
-          <el-col :span="3">
-            <el-row type="flex" justify="end">
-              <el-col><div class="grid-content bg-purple-light" />
-                <el-dropdown>
-                  <span class="el-dropdown-link"> 负责人 </span></el-dropdown></el-col>
-              <el-col><div class="grid-content bg-purple-light" />
-                <el-dropdown>
-                  <span class="el-dropdown-link">
-                    操作<i class="el-icon-arrow-down el-icon--right" />
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>添加子部门</el-dropdown-item>
-                  </el-dropdown-menu></el-dropdown></el-col>
-            </el-row>
-          </el-col>
-        </el-row>
+        <AddTree :list="company" :is-root="true" @command="handleCommon" />
       </div>
       <!-- card body -->
       <div class="custom-tree-container">
-        <el-tree
-          :data="departs"
-          :props="defaultProps"
-          default-expand-all="true"
-          :render-content="renderContent"
-        >
-          <span slot-scope="{ data }" class="custom-tree-node">
-            <span>{{ data.name }}</span>
-            <span>
-              <el-row type="flex">
-                <el-col>
-                  <el-dropdown class="dropper">
-                    <span class="el-dropdown-link">
-                      {{ data.manager }}
-                    </span></el-dropdown>
-                </el-col>
-                <el-col><div class="grid-content bg-purple-light" />
-                  <el-dropdown>
-                    <span class="el-dropdown-link">
-                      操作<i class="el-icon-arrow-down el-icon--right" />
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>添加子部门</el-dropdown-item>
-                    </el-dropdown-menu></el-dropdown></el-col>
-              </el-row>
-            </span>
-          </span>
+        <el-tree :data="departs" :props="defaultProps" default-expand-all>
+          <AddTree
+            slot-scope="{ data }"
+            :list="data"
+            :is-root="false"
+            @dropDownDelete="handlerDropDownDelete"
+            @command="handleCommon"
+          />
+
         </el-tree>
       </div>
+      <DiaLog :dialog-visible="dialogVisible" :list="node" @addDepartment="handleAddDepartment" />
     </el-card>
   </div>
 </template>
-
 <script>
+// 定义数组，封装请求，调用请求，将请求封装再函数中方便后面调用
+// 将值传给数组，再将数组传给子节点
+import { getDepartment, delDepartment } from '@/api/department'
+import AddTree from './components/add-tree.vue'
+import tranListToTreeData from '@/utils/transListToTreeData'
+import DiaLog from './components/tree-dialog.vue'
 export default {
   name: 'HrsaasIndex',
-
+  components: {
+    AddTree,
+    DiaLog
+  },
   data() {
     return {
+      dialogVisible: false,
       defaultProps: {
         label: 'name'
       },
-      departs: [
-        {
-          name: '总裁办',
-          manager: '1',
-          children: [{ name: '董事会', manager: '4' }]
-        },
-        { name: '行政部', manager: '2' },
-        { name: '人事部', manager: '3' }
-      ]
+      company: { name: '江苏传智播客教育科技股份有限公司', manager: '负责人', id: '' },
+      departs: [],
+      node: ''
     }
   },
+  created() {
+    this.initGetDepartment()
+  },
+  methods: {
+    async initGetDepartment() {
+      const { data } = await getDepartment()
 
-  mounted() {},
-
-  methods: {}
+      this.departs = tranListToTreeData(data.depts, '')
+    },
+    async handlerDropDownDelete(id) {
+      try {
+        await delDepartment(id)
+      } catch (error) {
+        console.log(error)
+      }
+      this.initGetDepartment()
+    },
+    handleCommon(command, data) {
+      this.dialogVisible = true
+      this.node = data
+    },
+    handleAddDepartment(form) {
+      // 发请求新增部门，同时将dialog设置为false，然后调用函数渲染
+    }
+  }
 }
 </script>
 
@@ -93,8 +82,8 @@ export default {
   padding: 30px 140px;
   font-size: 14px;
 }
-::v-deep .el-card__header {
-  padding: 18px 0px !important;
+::v-deep .el-card__body {
+  padding: 0px !important;
 }
 .custom-tree-node {
   width: 100%;
@@ -102,9 +91,14 @@ export default {
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  padding-right: 8px;
 }
-.dropper {
-  margin-right: 20px;
+::v-deep .el-card__header {
+  padding: 18px 0px !important;
 }
+::v-deep .saveAsDialog {
+  width: 700px !important;
+}
+// .el-dialog {
+//   width: 800px !important;
+// }
 </style>
