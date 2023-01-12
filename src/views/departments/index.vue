@@ -17,11 +17,16 @@
             :is-root="false"
             @dropDownDelete="handlerDropDownDelete"
             @command="handleCommon"
+            @detailDepartment="handleDetailDepartment"
           />
-
         </el-tree>
       </div>
-      <DiaLog :dialog-visible="dialogVisible" :list="node" @addDepartment="handleAddDepartment" />
+      <DiaLog
+        ref="dialog"
+        :dialog-visible.sync="dialogVisible"
+        :list="node"
+        @initGetDepartment="initGetDepartment"
+      />
     </el-card>
   </div>
 </template>
@@ -44,9 +49,13 @@ export default {
       defaultProps: {
         label: 'name'
       },
-      company: { name: '江苏传智播客教育科技股份有限公司', manager: '负责人', id: '' },
+      company: {
+        name: '江苏传智播客教育科技股份有限公司',
+        manager: '负责人',
+        id: ''
+      },
       departs: [],
-      node: ''
+      node: {}
     }
   },
   created() {
@@ -55,24 +64,28 @@ export default {
   methods: {
     async initGetDepartment() {
       const { data } = await getDepartment()
-
       this.departs = tranListToTreeData(data.depts, '')
     },
-    async handlerDropDownDelete(id) {
+    async handlerDropDownDelete(data) {
       try {
-        await delDepartment(id)
+        await delDepartment(data.id)
+        this.$message.success('删除成功')
       } catch (error) {
         console.log(error)
       }
       this.initGetDepartment()
     },
-    handleCommon(command, data) {
+    handleCommon(data) {
       this.dialogVisible = true
       this.node = data
     },
-    handleAddDepartment(form) {
-      // 发请求新增部门，同时将dialog设置为false，然后调用函数渲染
+    async handleDetailDepartment(data) {
+      this.dialogVisible = true
+      this.node = data
+      this.$refs.dialog.detailDepartment(data.id)
+      // this.$refs.form.detailDepartment
     }
+
   }
 }
 </script>

@@ -44,7 +44,6 @@ request.interceptors.response.use(function(response) {
   if (error.response.status === 401) {
     store.dispatch('user/logout')
     router.push('/login')
-    console.log()
     Message.error('登陆验证过期，请重新登录')
   } else {
     Message.error(error.response.data.message)

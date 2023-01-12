@@ -55,12 +55,10 @@ export default {
   },
   methods: {
     handleCommand(command) {
-      debugger
-      console.log(this.list)
       if (command === 'add') {
-        this.$emit('command', command, this.list)
+        this.$emit('command', this.list)
       } else if (command === 'edit') {
-        console.log(command)
+        this.$emit('detailDepartment', this.list)
       } else if (command === 'del') {
         this.$confirm('确认删除部门吗？', '确认信息', {
           distinguishCancelAndClose: true,
