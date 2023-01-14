@@ -8,7 +8,11 @@
         <template #after>
           <el-button size="small" type="warning">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
-          <el-button size="small" type="primary">新增员工</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            @click="handleDialog"
+          >新增员工</el-button>
         </template>
       </PageTools>
       <el-card>
@@ -39,7 +43,7 @@
             prop="username"
             sortable=""
             fixed="right"
-            width="280"
+            width="265"
           >
             <template slot-scope="{ row }">
               <el-button type="text" size="small">查看</el-button>
@@ -66,12 +70,17 @@
         </el-row>
       </el-card>
     </div>
+    <AddEmploers :dialog.sync="dialog" />
   </div>
 </template>
 <script>
 import { getEmployeeList, delEmployee } from '@/api/emploers'
 import EmployeeList from '@/constant/employees'
+import AddEmploers from '@/views/employees/components/add-employees.vue'
 export default {
+  components: {
+    AddEmploers
+  },
   data() {
     return {
       list: [],
@@ -79,7 +88,9 @@ export default {
         page: 1,
         size: 10,
         total: 0
-      }
+      },
+
+      dialog: false
     }
   },
   created() {
@@ -115,6 +126,9 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    handleDialog() {
+      this.dialog = true
     }
   }
 }
