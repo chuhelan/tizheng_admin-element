@@ -7,7 +7,6 @@
       size="medium"
       custom-class="saveAsDialog"
     >
-      {{ list.id }}
       <el-form ref="form" label-width="120px" :model="form" :rules="rules">
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="form.name" style="width: 90%" />

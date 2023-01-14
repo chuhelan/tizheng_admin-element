@@ -135,11 +135,10 @@ export default {
           } catch (error) {
             console.log(error)
           } finally {
-            this.loading = false
             clearTimeout(this.timer)
             this.timer = setTimeout(() => {
-              this.loading = true
-            }, 3000)
+              this.loading = false
+            }, 1000)
           }
         } else {
           clearTimeout(this.timer)

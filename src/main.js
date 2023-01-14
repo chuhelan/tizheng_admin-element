@@ -13,7 +13,7 @@ import store from './store'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+import Component from './components'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as imageError from '@/directives'
@@ -25,11 +25,18 @@ import * as imageError from '@/directives'
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
+import moment from 'moment'
+
+// 定义全局时间格式过滤器
+Vue.filter('dateFormat', function(daraStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
+  return moment(daraStr).format(pattern)
+})
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
 
+Vue.use(Component)
 Vue.use(VueAxios, axios)
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
@@ -39,7 +46,6 @@ Object.keys(imageError).forEach(element => {
   Vue.directive(element, imageError[element])
 })
 Vue.config.productionTip = false
-
 new Vue({
   el: '#app',
   router,
