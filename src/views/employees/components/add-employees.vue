@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="新增员工" :visible="dialog" @close="btnCanel">
+    <el-dialog title="新增员工" :visible.sync="dialog" @close="btnCanel">
       <el-form ref="form" :model="form" :rules="rules" label-width="150px">
         <el-form-item label="姓名" prop="username">
           <el-input
@@ -22,7 +22,7 @@
             type="date"
             placeholder="选择日期"
             style="width: 65%"
-          />
+          />·
         </el-form-item>
         <el-form-item label="聘用形式" prop="formOfEmployment">
           <el-select
@@ -30,8 +30,13 @@
             placeholder="请选择活动区域"
             style="width: 65%"
           >
-            <el-option label="区域一" value="shanghai" />
-            <el-option label="区域二" value="beijing" />
+            <el-option
+              v-for="item in EmployeeList.hireType"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+            />
+            <!-- <el-option label="区域二" value="beijing" /> -->
           </el-select>
         </el-form-item>
         <el-form-item label="工号" prop="workNumber">
@@ -49,7 +54,14 @@
             style="width: 65%"
             @focus="handleFocus"
           />
-          <el-tree v-if="flag" :data="tableDate" :props="defaultProps" default-expand-all />
+
+          <el-tree
+            v-if="flag"
+            :data="tableDate"
+            :props="defaultProps"
+            default-expand-all
+            @node-click="select"
+          />
         </el-form-item>
         <el-form-item label="转正时间" prop="correctionTime">
           <el-date-picker
@@ -63,8 +75,12 @@
       <span slot="footer">
         <el-row type="flex" justify="center" style="margin-right: 65px">
           <el-col :span="6">
-            <el-button size="small">取消</el-button>
-            <el-button type="primary" size="small">确定</el-button>
+            <el-button size="small" @click="btnCanel">取消</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="submitList"
+            >确定</el-button>
           </el-col>
         </el-row>
       </span>
@@ -73,8 +89,9 @@
 </template>
 <script>
 import { getDepartment } from '@/api/department'
+import { addEmployee } from '@/api/emploers'
 import transListToTreeData from '@/utils/transListToTreeData.js'
-
+import EmployeeList from '@/constant/employees'
 export default {
   name: 'HrsaasAddEmploers',
   props: {
@@ -85,6 +102,8 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      EmployeeList,
       form: {
         username: '',
         mobile: '',
@@ -99,19 +118,34 @@ export default {
       },
       tableDate: [],
       rules: {
-        username: [{ required: true, message: '用户姓名不能为空', trigger: 'blur' }, {
-          min: 1, max: 4, message: '用户姓名为1-4位'
-        }],
-        mobile: [{ required: true, message: '手机号不能为空', trigger: 'blur' }, {
-          pattern: /^1[3-9]\d{9}$/, message: '手机号格式不正确', trigger: 'blur'
-        }],
-        formOfEmployment: [{ required: true, message: '聘用形式不能为空', trigger: 'blur' }],
-        workNumber: [{ required: true, message: '工号不能为空', trigger: 'blur' }],
-        departmentName: [{ required: true, message: '部门不能为空', trigger: 'change' }],
+        username: [
+          { required: true, message: '用户姓名不能为空', trigger: 'blur' },
+          {
+            min: 1,
+            max: 4,
+            message: '用户姓名为1-4位'
+          }
+        ],
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          {
+            pattern: /^1[3-9]\d{9}$/,
+            message: '手机号格式不正确',
+            trigger: 'blur'
+          }
+        ],
+        formOfEmployment: [
+          { required: true, message: '聘用形式不能为空', trigger: 'blur' }
+        ],
+        workNumber: [
+          { required: true, message: '工号不能为空', trigger: 'blur' }
+        ],
+        departmentName: [
+          { required: true, message: '部门不能为空', trigger: 'change' }
+        ],
         timeOfEntry: [{ required: true, message: '入职时间', trigger: 'blur' }]
       },
       flag: false
-
     }
   },
   mounted() {},
@@ -122,6 +156,26 @@ export default {
       this.tableDate = transListToTreeData(data.depts, '')
       this.flag = true
       this.loading = false
+    },
+    select(node) {
+      this.form.departmentName = node.name
+      this.flag = false
+    },
+    btnCanel() {
+      this.form = {}
+      this.$emit('update:dialog', false)
+      this.$refs.form.resetFields()
+    },
+    async submitList() {
+      try {
+        await this.$refs.form.validate()
+        await addEmployee(this.form)
+        this.$parent.initGetEmployeeList()
+        this.$message.success('新增员工成功')
+        this.btnCanel()
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

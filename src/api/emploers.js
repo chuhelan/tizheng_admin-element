@@ -15,3 +15,10 @@ export function delEmployee(id) {
     method: 'delete'
   })
 }
+export const addEmployee = (data) => {
+  return request({
+    url: '/sys/user',
+    method: 'POST',
+    data
+  })
+}
