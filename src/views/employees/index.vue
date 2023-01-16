@@ -6,8 +6,16 @@
           <span>总记录数{{ pageList.total }}</span>
         </template>
         <template #after>
-          <el-button size="small" type="warning">导入</el-button>
-          <el-button size="small" type="danger">导出</el-button>
+          <el-button
+            size="small"
+            type="warning"
+            @click="$router.push('/import')"
+          >导入</el-button>
+          <el-button
+            size="small"
+            type="danger"
+            @click="exportJson"
+          >导出</el-button>
           <el-button
             size="small"
             type="primary"
@@ -129,6 +137,53 @@ export default {
     },
     handleDialog() {
       this.dialog = true
+    },
+    // [{}]=>[[]]
+    formatJson(headers, rows) {
+      return rows.map((item) => {
+        return Object.keys(headers).map((key) => {
+          if (key === '入职日期' || key === '转正日期') {
+            if (item[headers[key]] === null) {
+              item[headers[key]] = ''
+              return item[headers[key]]
+            } else {
+              item[headers[key]] = this.$moment(item[headers[key]]).format('YYYY-MM-DD')
+              return item[headers[key]]
+            }
+          } else if (key === '聘用形式') {
+            const obj = EmployeeList.hireType.find(itemEl => itemEl.id === item[headers[key]])
+            return obj.value ? obj.value : '未声明'
+          } else {
+            return item[headers[key]]
+          }
+        })
+      })
+    },
+    exportJson() {
+      const headers = {
+        姓名: 'username',
+        手机号: 'mobile',
+        入职日期: 'timeOfEntry',
+        聘用形式: 'formOfEmployment',
+        转正日期: 'correctionTime',
+        工号: 'workNumber',
+        部门: 'departmentName'
+      }
+      import('@/vendor/Export2Excel').then(async(excel) => {
+        const { data } = await getEmployeeList({
+          page: 1,
+          size: this.pageList.total
+        })
+        const list = this.formatJson(headers, data.rows)
+        const multiHeader = [['姓名', '主要信息', '', '', '', '', '部门']]
+        const merges = ['A1:A2', 'B1:F1', 'G1:G2']
+        excel.export_json_to_excel({
+          header: Object.keys(headers),
+          data: list,
+          multiHeader,
+          merges
+        })
+      })
     }
   }
 }
