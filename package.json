@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "0.18.1",
     "core-js": "3.6.5",
+    "cos-js-sdk-v5": "^1.4.15",
     "element-ui": "2.13.2",
     "fetch": "^1.1.0",
     "jquery": "^3.6.3",

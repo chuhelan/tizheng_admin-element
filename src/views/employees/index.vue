@@ -27,6 +27,22 @@
         <el-table v-loading="loading" border :data="list">
           <el-table-column label="序号" type="index" sortable="" />
           <el-table-column label="姓名" prop="username" sortable="" />
+          <el-table-column label="头像">
+            <template slot-scope="{ row }">
+              <img
+                v-imageError="defaultImage"
+                :src="row.staffPhoto"
+                alt=""
+                srcset=""
+                style="
+                  border-radius: 50%;
+                  width: 100px;
+                  height: 100px;
+                  padding: 10px;
+                "
+              >
+            </template>
+          </el-table-column>
           <el-table-column label="工号" prop="workNumber" sortable="" />
           <el-table-column
             label="聘用形式"
@@ -54,7 +70,11 @@
             width="265"
           >
             <template slot-scope="{ row }">
-              <el-button type="text" size="small" @click="$router.push(`/detail/${row.id}`)">查看</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="$router.push(`/detail/${row.id}`)"
+              >查看</el-button>
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
@@ -92,6 +112,7 @@ export default {
   data() {
     return {
       list: [],
+      defaultImage: require('@/assets/common/img.jpeg'),
       pageList: {
         page: 1,
         size: 10,
@@ -147,11 +168,15 @@ export default {
               item[headers[key]] = ''
               return item[headers[key]]
             } else {
-              item[headers[key]] = this.$moment(item[headers[key]]).format('YYYY-MM-DD')
+              item[headers[key]] = this.$moment(item[headers[key]]).format(
+                'YYYY-MM-DD'
+              )
               return item[headers[key]]
             }
           } else if (key === '聘用形式') {
-            const obj = EmployeeList.hireType.find(itemEl => itemEl.id === item[headers[key]])
+            const obj = EmployeeList.hireType.find(
+              (itemEl) => itemEl.id === item[headers[key]]
+            )
             return obj.value ? obj.value : '未声明'
           } else {
             return item[headers[key]]
