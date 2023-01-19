@@ -32,14 +32,13 @@
               <img
                 v-imageError="defaultImage"
                 :src="row.staffPhoto"
-                alt=""
-                srcset=""
                 style="
                   border-radius: 50%;
                   width: 100px;
                   height: 100px;
                   padding: 10px;
                 "
+                @click="showQrcode(row.staffPhoto)"
               >
             </template>
           </el-table-column>
@@ -99,12 +98,23 @@
       </el-card>
     </div>
     <AddEmploers :dialog.sync="dialog" />
+    <el-dialog
+      title="二维码"
+      :visible.sync="showQr"
+      width="30%"
+    >
+      <el-row type="flex" justify="center">
+        <canvas ref="myCanvas" />
+      </el-row>
+    </el-dialog>
+
   </div>
 </template>
 <script>
 import { getEmployeeList, delEmployee } from '@/api/emploers'
 import EmployeeList from '@/constant/employees'
 import AddEmploers from '@/views/employees/components/add-employees.vue'
+import QrCode from 'qrcode'
 export default {
   components: {
     AddEmploers
@@ -119,12 +129,14 @@ export default {
         total: 0
       },
 
-      dialog: false
+      dialog: false,
+      showQr: false
     }
   },
   created() {
     this.initGetEmployeeList()
   },
+
   methods: {
     async initGetEmployeeList() {
       this.loading = true
@@ -209,7 +221,16 @@ export default {
           merges
         })
       })
+    },
+    showQrcode(url) {
+      if (url) {
+        this.showQr = true
+        this.$nextTick(() => QrCode.toCanvas(this.$refs.myCanvas, url))
+      } else {
+        this.$message.warning('头像未上传')
+      }
     }
+
   }
 }
 </script>

@@ -6,9 +6,23 @@
           <component :is="currentView" />
         </el-tab-pane>
         <el-tab-pane label="个人详情" name="second">
+          <el-row type="flex" justify="end">
+            <el-tooltip content="打印个人基本信息">
+              <router-link :to="`/print/${userId}?type=personal`">
+                <i class="el-icon-printer" />
+              </router-link>
+            </el-tooltip>
+          </el-row>
           <component :is="personal" />
         </el-tab-pane>
         <el-tab-pane label="岗位信息" name="third">
+          <el-row type="flex" justify="end">
+            <el-tooltip content="打印岗位信息">
+              <router-link :to="`/print/${userId}?type=job`">
+                <i class="el-icon-printer" />
+              </router-link>
+            </el-tooltip>
+          </el-row>
           <component :is="job" />
         </el-tab-pane>
       </el-tabs>
@@ -34,7 +48,8 @@ export default {
       rules: {},
       currentView: User,
       personal: personalDetail,
-      job: JobCompoents
+      job: JobCompoents,
+      userId: this.$route.params.id
     }
   },
 
