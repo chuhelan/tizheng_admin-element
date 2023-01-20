@@ -34,4 +34,10 @@ export function addRole(data) {
     method: 'post'
   })
 }
-
+export function assignRoles(data) {
+  return request({
+    url: '/sys/user/assignRoles',
+    data,
+    method: 'put'
+  })
+}

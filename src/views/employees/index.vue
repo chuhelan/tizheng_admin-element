@@ -77,7 +77,7 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="showRdbc(row.id)">角色</el-button>
               <el-button
                 type="text"
                 size="small"
@@ -107,17 +107,20 @@
         <canvas ref="myCanvas" />
       </el-row>
     </el-dialog>
-
+    <AssignRole ref="roleList" :show-rdbc-dialog.sync="showRdbcDialog" :user-id="userId" />
   </div>
 </template>
 <script>
+
+import AssignRole from '@/views/employees/components/assign-role.vue'
 import { getEmployeeList, delEmployee } from '@/api/emploers'
 import EmployeeList from '@/constant/employees'
 import AddEmploers from '@/views/employees/components/add-employees.vue'
 import QrCode from 'qrcode'
 export default {
   components: {
-    AddEmploers
+    AddEmploers,
+    AssignRole
   },
   data() {
     return {
@@ -130,7 +133,9 @@ export default {
       },
 
       dialog: false,
-      showQr: false
+      showQr: false,
+      showRdbcDialog: false,
+      userId: ''
     }
   },
   created() {
@@ -229,6 +234,11 @@ export default {
       } else {
         this.$message.warning('头像未上传')
       }
+    },
+    showRdbc(id) {
+      this.userId = id
+      this.showRdbcDialog = true
+      this.$refs.roleList.initRoleList(id)
     }
 
   }

@@ -26,7 +26,6 @@ import * as imageError from '@/directives'
  * please remove it before going online ! ! !
  */
 import moment from 'moment'
-
 Vue.prototype.$moment = moment
 // 定义全局时间格式过滤器
 Vue.filter('dateFormat', function(daraStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
