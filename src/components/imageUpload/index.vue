@@ -83,8 +83,6 @@ export default {
           StorageClass: 'STANDARD',
           onProgress: (progressData) => {
             this.percent = progressData.percent * 100
-            console.log(this.percent)
-            console.log(progressData)
           }
         }, (err, data) => {
           if (!err && data.statusCode === 200) {

@@ -62,6 +62,7 @@ export default {
     let flag = null
     var validateName = async(rule, value, callback) => {
       const { data } = await getDepartment()
+
       if (this.form.id) {
         flag = data.depts.filter((item) => item.pid === this.form.pid && item.id !== this.form.id).some(item => item.name === value)
       } else {
@@ -112,6 +113,7 @@ export default {
     async changeSelector() {
       const { data } = await getManager()
       this.people = data
+      console.log(this.list)
     },
 
     async detailDepartment(id) {
