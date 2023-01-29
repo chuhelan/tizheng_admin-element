@@ -1,5 +1,6 @@
 import { getToken, setToken, removeToken, getUserToken, setUserToken, removeUserToken, setTimeStamp } from '@/utils/auth'
 import { login, getInfo, getUserDetailById } from '@/api/user'
+import { resetRouter } from '@/router'
 // import store from '@/store'
 export default {
   namespaced: true,
@@ -44,6 +45,8 @@ export default {
     logout(ctx) {
       ctx.commit('removeToken')
       ctx.commit('removeUserInfo')
+      resetRouter()
+      ctx.commit('persimmon/setRoutes', [], { root: true })
     }
   },
   getters: {}

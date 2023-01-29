@@ -36,6 +36,7 @@
         :title="form.id ? '编辑' : '新增'"
         :visible.sync="showDiaLog"
         width="40%"
+        @close="btnCal"
       >
         <el-form
           ref="form"

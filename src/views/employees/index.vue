@@ -176,7 +176,6 @@ export default {
     handleDialog() {
       this.dialog = true
     },
-    // [{}]=>[[]]
     formatJson(headers, rows) {
       return rows.map((item) => {
         return Object.keys(headers).map((key) => {

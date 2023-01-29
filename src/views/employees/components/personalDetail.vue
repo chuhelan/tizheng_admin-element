@@ -507,7 +507,6 @@ export default {
       }
     },
     async savePersonal() {
-      // debugger
       const flag = this.$refs.userAvator.fileList.some(
         (item) => item.upload === true
       )

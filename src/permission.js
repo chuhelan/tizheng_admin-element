@@ -11,7 +11,9 @@ router.beforeEach(async(to, from, next) => {
       next('/')
     } else {
       // if (!userInfo.userId) {
-      await store.dispatch('user/getInfo')
+      const { roles } = await store.dispatch('user/getInfo')
+      const routes = await store.dispatch('persimmon/filterRoutes', roles.menus)
+      router.addRoutes([{ path: '*', redirect: '/404', hidden: true }, ...routes])
       // }
       next()
     }

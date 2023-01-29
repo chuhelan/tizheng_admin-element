@@ -113,7 +113,6 @@ export default {
     async changeSelector() {
       const { data } = await getManager()
       this.people = data
-      console.log(this.list)
     },
 
     async detailDepartment(id) {

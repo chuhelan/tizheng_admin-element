@@ -24,7 +24,6 @@ export function updateRoleDetail(data) {
     url: `/sys/role/${data.id}`,
     method: 'PUT',
     data
-
   })
 }
 export function addRole(data) {
@@ -37,6 +36,13 @@ export function addRole(data) {
 export function assignRoles(data) {
   return request({
     url: '/sys/user/assignRoles',
+    data,
+    method: 'put'
+  })
+}
+export function assignPrem(data) {
+  return request({
+    url: '/sys/role/assignPrem',
     data,
     method: 'put'
   })

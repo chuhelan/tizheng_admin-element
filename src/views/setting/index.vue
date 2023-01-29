@@ -27,7 +27,11 @@
               <el-table-column align="center" prop="description" label="描述" />
               <el-table-column align="center" label="操作">
                 <template slot-scope="{ row }">
-                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button
+                    size="small"
+                    type="success"
+                    @click="assignPermissions(row.id)"
+                  >分配权限</el-button>
                   <el-button
                     size="small"
                     type="primary"
@@ -121,10 +125,36 @@
           </el-col>
         </el-row>
       </el-dialog>
+      <el-dialog
+        title="分配权限"
+        :visible.sync="isShow"
+        width="30%"
+        @close="btnPermissionsCal"
+      >
+        <el-tree
+          ref="tree"
+          :data="list"
+          :props="defaultProps"
+          show-checkbox
+          default-expand-all
+          :check-strictly="true"
+          node-key="id"
+          :default-checked-keys="permissionId"
+          @close="btnPermissionsCal"
+        />
+        <span slot="footer">
+          <el-row :span="6" type="flex" justify="center">
+            <el-button @click="btnPermissionsCal">取消</el-button>
+            <el-button
+              type="primary"
+              @click="btnPermissionsSubmit"
+            >确认</el-button>
+          </el-row>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
-
 <script>
 import {
   getRole,
@@ -134,17 +164,22 @@ import {
   updateRoleDetail,
   addRole
 } from '@/api/setting'
+import { assignPrem } from '@/api/setting'
+import { getPermission } from '@/api/permission'
+import transListToTreeData from '@/utils/transListToTreeData'
 import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       activeName: 'first',
       form: {},
+      list: [],
       pageList: {
         page: 1,
         pageSize: 10
       },
       dialog: false,
+      isShow: false,
       tableData: [],
       total: 1,
       formDate: {
@@ -153,7 +188,12 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
-      }
+      },
+      defaultProps: {
+        label: 'name'
+      },
+      permissionId: [],
+      roleId: ''
     }
   },
   computed: {
@@ -217,6 +257,23 @@ export default {
       this.dialog = true
       const { data } = await getRoleDetail(id)
       this.formDate = data
+    },
+    async assignPermissions(id) {
+      this.roleId = id
+      this.isShow = true
+      const { data } = await getPermission()
+      this.list = await transListToTreeData(data, '0')
+      const res = await getRoleDetail(id)
+      this.permissionId = res.data.permIds
+    },
+    async btnPermissionsSubmit() {
+      await assignPrem({ id: this.roleId, permIds: this.$refs.tree.getCheckedKeys() })
+      this.$message.success('分配权限成功')
+      this.isShow = false
+    },
+    btnPermissionsCal() {
+      this.permissionId = []
+      this.isShow = false
     }
   }
 }

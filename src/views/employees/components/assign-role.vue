@@ -33,7 +33,10 @@ export default {
       type: Boolean,
       default: false
     },
-    userId: Number
+    userId: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -61,8 +64,12 @@ export default {
       this.roleList = data.roleIds
     },
     async submit() {
-      await assignRoles({ id: this.userId, roleIds: this.roleList })
-      this.$emit('update:showRdbcDialog', false)
+      try {
+        await assignRoles({ id: this.userId, roleIds: this.roleList })
+        this.$emit('update:showRdbcDialog', false)
+      } catch (error) {
+        console.log(error)
+      }
     },
     btnCal() {
       this.roleList = []
