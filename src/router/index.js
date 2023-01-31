@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import approvalsRouter from './modules/approvals'
+// import approvalsRouter from './modules/approvals'
 import departmentsRouter from './modules/departments'
 import employeesRouter from './modules/employees'
 import permissionRouter from './modules/permission'
-import attendancesRouter from './modules/attendances'
-import salarysRouter from './modules/salarys'
+// import attendancesRouter from './modules/attendances'
+// import salarysRouter from './modules/salarys'
 import settingRouter from './modules/setting'
-import socialRouter from './modules/social'
+// import socialRouter from './modules/social'
 
 Vue.use(Router)
 
@@ -40,14 +40,14 @@ import Layout from '@/layout'
  */
 
 export const asyncRoutes = [
-  approvalsRouter,
+  // approvalsRouter,
   departmentsRouter,
   employeesRouter,
   permissionRouter,
-  attendancesRouter,
-  salarysRouter,
-  settingRouter,
-  socialRouter
+  // attendancesRouter,
+  // salarysRouter,
+  settingRouter
+  // socialRouter
 ]
 export const constantRoutes = [
   {
@@ -69,7 +69,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        name: 'Dashboard',
+        name: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: 'Dashboard', icon: 'dashboard' }
       }
@@ -87,11 +87,11 @@ export const constantRoutes = [
     ]
   }
   // 404 page must be placed at the end !!!
-
 ]
 const createRouter = () =>
   new Router({
     mode: 'history', // require service support
+    base: '/hr',
     scrollBehavior: () => ({ y: 0 }),
     routes: [...constantRoutes]
   })

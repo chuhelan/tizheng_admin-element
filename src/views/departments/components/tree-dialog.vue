@@ -33,7 +33,6 @@
           <el-input v-model="form.desc" type="textarea" style="width: 90%" />
         </el-form-item>
       </el-form>
-
       <span slot="footer" class="dialog-footer">
         <el-row type="flex" justify="center">
           <el-button @click="handleCandle">取 消</el-button>

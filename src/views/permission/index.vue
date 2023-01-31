@@ -25,9 +25,10 @@
             <el-button
               v-if="row.type === 1"
               type="text"
+              :disabled="!checkPersimmon('add-department')"
               @click="submit(2, row.id)"
             >添加</el-button>
-            <el-button type="text" @click="edit(row.id)">编辑</el-button>
+            <el-button type="text" :disabled="!checkPersimmon('deit-department')" @click="edit(row.id)">编辑</el-button>
             <el-button type="text" @click="btnDel(row.id)">删除</el-button>
           </template>
         </el-table-column>

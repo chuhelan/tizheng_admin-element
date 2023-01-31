@@ -11,10 +11,12 @@
     </div>
     <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="right-menu">
+      <theme-picker class="right-menu-item" />
+      <lang class="ver" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img v-imageError="defaultImage" :src="staffPhoto" class="user-avatar">
-          <span class="userName">管理员</span>
+          <span class="userName">{{ name }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -41,7 +43,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
 // import Breadcrumb from '@/components/Breadcrumb'
@@ -58,7 +59,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'staffPhoto'])
+    ...mapGetters(['sidebar', 'avatar', 'staffPhoto', 'name'])
   },
   methods: {
     toggleSideBar() {
@@ -116,19 +117,16 @@ export default {
     float: right;
     height: 100%;
     line-height: 50px;
-
     &:focus {
       outline: none;
     }
 
     .right-menu-item {
-      display: inline-block;
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
-      vertical-align: text-bottom;
-
+      line-height: 50px;
       &.hover-effect {
         cursor: pointer;
         transition: background 0.3s;
@@ -173,5 +171,6 @@ export default {
       }
     }
   }
+
 }
 </style>
